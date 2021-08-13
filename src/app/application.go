@@ -5,6 +5,7 @@ import (
 	"github.com/harlesbayu/bookstore_oauth-api/src/domain/access_token"
 	"github.com/harlesbayu/bookstore_oauth-api/src/http"
 	"github.com/harlesbayu/bookstore_oauth-api/src/repository/db"
+	"github.com/harlesbayu/bookstore_oauth-api/src/repository/rest"
 )
 
 var (
@@ -12,7 +13,7 @@ var (
 )
 
 func StartApplication() {
-	atService := access_token.NewService(db.NewRepository())
+	atService := access_token.NewService(rest.NewRepository(), db.NewRepository())
 	atHandler := http.NewHandler(atService)
 
 	router.GET("/oauth/access_token/:accessTokenId", atHandler.GetById)

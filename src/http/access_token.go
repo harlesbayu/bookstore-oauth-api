@@ -35,7 +35,7 @@ func (h *accessTokenHandler) GetById(c *gin.Context) {
 }
 
 func (h *accessTokenHandler) Create(c *gin.Context) {
-	var data access_token.AccessToken
+	var data access_token.AccessTokenRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
 		restErr := errors.NewBadRequestError("invalid json body")
@@ -43,10 +43,12 @@ func (h *accessTokenHandler) Create(c *gin.Context) {
 		return
 	}
 
-	if err := h.service.Create(data); err != nil {
+	response, err := h.service.Create(data)
+
+	if err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, data)
+	c.JSON(http.StatusCreated, response)
 }

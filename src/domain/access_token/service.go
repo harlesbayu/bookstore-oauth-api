@@ -3,28 +3,34 @@ package access_token
 import (
 	"strings"
 
+	"github.com/harlesbayu/bookstore_oauth-api/src/domain/users"
 	"github.com/harlesbayu/bookstore_oauth-api/src/utils/errors"
 )
 
-type Repository interface {
+type DbRepository interface {
 	GetById(string) (*AccessToken, *errors.RestErr)
-	Create(AccessToken) *errors.RestErr
+	Create(*AccessToken) *errors.RestErr
 	UpdateExpirationTime(AccessToken) *errors.RestErr
 }
 
+type RestRepository interface {
+	LoginUser(string, string) (*users.User, *errors.RestErr)
+}
 type Service interface {
 	GetById(string) (*AccessToken, *errors.RestErr)
-	Create(AccessToken) *errors.RestErr
+	Create(AccessTokenRequest) (*AccessToken, *errors.RestErr)
 	UpdateExpirationTime(AccessToken) *errors.RestErr
 }
 
 type service struct {
-	repository Repository
+	dbRepository   DbRepository
+	restRepository RestRepository
 }
 
-func NewService(repo Repository) Service {
+func NewService(restRepo RestRepository, dbRepo DbRepository) Service {
 	return &service{
-		repository: repo,
+		restRepository: restRepo,
+		dbRepository:   dbRepo,
 	}
 }
 
@@ -35,7 +41,7 @@ func (s *service) GetById(accessTokenId string) (*AccessToken, *errors.RestErr) 
 		return nil, errors.NewBadRequestError("invalid access token id")
 	}
 
-	accessToken, err := s.repository.GetById(accessTokenId)
+	accessToken, err := s.dbRepository.GetById(accessTokenId)
 
 	if err != nil {
 		return nil, err
@@ -44,18 +50,33 @@ func (s *service) GetById(accessTokenId string) (*AccessToken, *errors.RestErr) 
 	return accessToken, nil
 }
 
-func (s *service) Create(data AccessToken) *errors.RestErr {
-	if err := data.Vaidate(); err != nil {
-		return err
+func (s *service) Create(request AccessTokenRequest) (*AccessToken, *errors.RestErr) {
+	if err := request.Validate(); err != nil {
+		return nil, err
+	}
+	user, err := s.restRepository.LoginUser(request.Username, request.Password)
+
+	if err != nil {
+		return nil, errors.NewBadRequestError("invalid access token id")
 	}
 
-	return s.repository.Create(data)
+	accessToken := GetNewAccessToken(user.Id)
+
+	if accessToken == nil {
+		return nil, errors.NewBadRequestError("failed generate access token")
+	}
+
+	if err := s.dbRepository.Create(accessToken); err != nil {
+		return nil, errors.NewBadRequestError("failed create access token")
+	}
+
+	return accessToken, nil
 }
 
 func (s *service) UpdateExpirationTime(data AccessToken) *errors.RestErr {
-	if err := data.Vaidate(); err != nil {
+	if err := data.Validate(); err != nil {
 		return err
 	}
 
-	return s.repository.UpdateExpirationTime(data)
+	return s.dbRepository.UpdateExpirationTime(data)
 }

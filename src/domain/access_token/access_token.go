@@ -4,11 +4,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/harlesbayu/bookstore_oauth-api/src/utils/errors"
 )
 
 const (
-	expirationTime = 24
+	expirationTime            = 24
+	grantTypePassword         = "password"
+	grantTypeClientCredential = "client_credential"
 )
 
 type AccessToken struct {
@@ -18,7 +21,29 @@ type AccessToken struct {
 	Expires     int64  `json:"expires"`
 }
 
-func (data *AccessToken) Vaidate() *errors.RestErr {
+type AccessTokenRequest struct {
+	GrantType    string `json:"grantType"`
+	Scope        string `json:"scope"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	ClientId     string `json:"clientId"`
+	ClientSecret string `json:"clientSecret"`
+}
+
+func (data *AccessTokenRequest) Validate() *errors.RestErr {
+	switch data.GrantType {
+	case grantTypePassword:
+		break
+	case grantTypeClientCredential:
+		break
+	default:
+		return errors.NewBadRequestError("invalid grant_type parameter")
+	}
+
+	return nil
+}
+
+func (data *AccessToken) Validate() *errors.RestErr {
 	data.AccessToken = strings.TrimSpace(data.AccessToken)
 
 	if data.AccessToken == "" {
@@ -40,9 +65,21 @@ func (data *AccessToken) Vaidate() *errors.RestErr {
 	return nil
 }
 
-func GetNewAccessToken() AccessToken {
-	return AccessToken{
-		Expires: time.Now().UTC().Add(expirationTime * time.Hour).Unix(),
+func GetNewAccessToken(userId int64) *AccessToken {
+	expires := time.Now().Add(time.Minute * 15).Unix()
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["user_id"] = userId
+	atClaims["exp"] = expires
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	token, err := at.SignedString([]byte("secret-access-token"))
+	if err != nil {
+		return nil
+	}
+	return &AccessToken{
+		AccessToken: token,
+		UserId:      userId,
+		Expires:     expires,
 	}
 }
 
