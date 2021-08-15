@@ -27,20 +27,20 @@ func NewService(usersRepo rest.RestUsersRepository, dbRepo db.DbRepository) Serv
 	}
 }
 
-func (s *service) GetById(accessTokenId string) (*access_token.AccessToken, *errors.RestErr) {
-	accessTokenId = strings.TrimSpace(accessTokenId)
+func (s *service) GetById(accessToken string) (*access_token.AccessToken, *errors.RestErr) {
+	accessToken = strings.TrimSpace(accessToken)
 
-	if len(accessTokenId) == 0 {
+	if len(accessToken) == 0 {
 		return nil, errors.NewBadRequestError("invalid access token id")
 	}
 
-	accessToken, err := s.dbRepo.GetById(accessTokenId)
+	resp, err := s.dbRepo.GetById(accessToken)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return accessToken, nil
+	return resp, nil
 }
 
 func (s *service) Create(request access_token.AccessTokenRequest) (*access_token.AccessToken, *errors.RestErr) {

@@ -25,9 +25,9 @@ func NewRepository() DbRepository {
 
 type dbRepository struct{}
 
-func (r *dbRepository) GetById(id string) (*access_token.AccessToken, *errors.RestErr) {
+func (r *dbRepository) GetById(accessToken string) (*access_token.AccessToken, *errors.RestErr) {
 	var result access_token.AccessToken
-	if err := cassandra.GetSession().Query(queryGetAccessToken, id).Scan(
+	if err := cassandra.GetSession().Query(queryGetAccessToken, accessToken).Scan(
 		&result.AccessToken,
 		&result.UserId,
 		&result.ClientId,

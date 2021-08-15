@@ -25,14 +25,14 @@ func NewAccessTokenHandler(service access_token.Service) AccessTokenHandler {
 }
 
 func (h *accessTokenHandler) GetById(c *gin.Context) {
-	accessToken, err := h.service.GetById(c.Param("accessTokenId"))
+	accessToken, err := h.service.GetById(c.Param("accessToken"))
 
 	if err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, accessToken)
+	c.JSON(http.StatusOK, accessToken)
 }
 
 func (h *accessTokenHandler) Create(c *gin.Context) {
