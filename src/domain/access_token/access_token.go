@@ -30,7 +30,7 @@ type AccessTokenRequest struct {
 	ClientSecret string `json:"clientSecret"`
 }
 
-func (data *AccessTokenRequest) Validate() *rest_errors.RestErr {
+func (data *AccessTokenRequest) Validate() rest_errors.RestErr {
 	switch data.GrantType {
 	case grantTypePassword:
 		break
@@ -43,7 +43,7 @@ func (data *AccessTokenRequest) Validate() *rest_errors.RestErr {
 	return nil
 }
 
-func (data *AccessToken) Validate() *rest_errors.RestErr {
+func (data *AccessToken) Validate() rest_errors.RestErr {
 	data.AccessToken = strings.TrimSpace(data.AccessToken)
 
 	if data.AccessToken == "" {

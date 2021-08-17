@@ -13,7 +13,7 @@ import (
 var baseUrl = "http://localhost:3000"
 
 type RestUsersRepository interface {
-	LoginUser(string, string) (*users.User, *rest_errors.RestErr)
+	LoginUser(string, string) (*users.User, rest_errors.RestErr)
 }
 
 type userRepository struct{}
@@ -22,7 +22,7 @@ func NewRestUsersRepository() RestUsersRepository {
 	return &userRepository{}
 }
 
-func (r *userRepository) LoginUser(email string, password string) (*users.User, *rest_errors.RestErr) {
+func (r *userRepository) LoginUser(email string, password string) (*users.User, rest_errors.RestErr) {
 	requestBody, err := json.Marshal(map[string]string{
 		"email":    email,
 		"password": password,

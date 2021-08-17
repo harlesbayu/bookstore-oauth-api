@@ -10,9 +10,9 @@ import (
 )
 
 type Service interface {
-	GetById(string) (*access_token.AccessToken, *rest_errors.RestErr)
-	Create(access_token.AccessTokenRequest) (*access_token.AccessToken, *rest_errors.RestErr)
-	UpdateExpirationTime(access_token.AccessToken) *rest_errors.RestErr
+	GetById(string) (*access_token.AccessToken, rest_errors.RestErr)
+	Create(access_token.AccessTokenRequest) (*access_token.AccessToken, rest_errors.RestErr)
+	UpdateExpirationTime(access_token.AccessToken) rest_errors.RestErr
 }
 
 type service struct {
@@ -27,7 +27,7 @@ func NewService(usersRepo rest.RestUsersRepository, dbRepo db.DbRepository) Serv
 	}
 }
 
-func (s *service) GetById(accessToken string) (*access_token.AccessToken, *rest_errors.RestErr) {
+func (s *service) GetById(accessToken string) (*access_token.AccessToken, rest_errors.RestErr) {
 	accessToken = strings.TrimSpace(accessToken)
 
 	if len(accessToken) == 0 {
@@ -43,7 +43,7 @@ func (s *service) GetById(accessToken string) (*access_token.AccessToken, *rest_
 	return resp, nil
 }
 
-func (s *service) Create(request access_token.AccessTokenRequest) (*access_token.AccessToken, *rest_errors.RestErr) {
+func (s *service) Create(request access_token.AccessTokenRequest) (*access_token.AccessToken, rest_errors.RestErr) {
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (s *service) Create(request access_token.AccessTokenRequest) (*access_token
 	return accessToken, nil
 }
 
-func (s *service) UpdateExpirationTime(data access_token.AccessToken) *rest_errors.RestErr {
+func (s *service) UpdateExpirationTime(data access_token.AccessToken) rest_errors.RestErr {
 	if err := data.Validate(); err != nil {
 		return err
 	}

@@ -34,8 +34,8 @@ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed h1:5upAirOpQc1Q53c0bnx2ufif5kANL7bfZWcc6VJWJd8=
 github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed/go.mod h1:tMWxXQ9wFIaZeTI9F+hmhFiGpFmhOHzyShyFUhRm0H4=
-github.com/harlesbayu/bookstore-utils-go v0.0.0-20210817065823-ca8ead27338f h1:EeCsIq9WkMVXEP2NA2khFp8BsdriTF/PUpsYIneslZA=
-github.com/harlesbayu/bookstore-utils-go v0.0.0-20210817065823-ca8ead27338f/go.mod h1:MreoGJ4FT7tJ0HXWQiCshULmiml15pEYq4B5G+FhBbY=
+github.com/harlesbayu/bookstore-utils-go v0.0.0-20210817124730-4ec40491f762 h1:dCqavIZFWZeaxcLqn1wGa6HdVdgl1lu3jHO8ZYjOp8c=
+github.com/harlesbayu/bookstore-utils-go v0.0.0-20210817124730-4ec40491f762/go.mod h1:MreoGJ4FT7tJ0HXWQiCshULmiml15pEYq4B5G+FhBbY=
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/json-iterator/go v1.1.11 h1:uVUAXhF2To8cbw/3xN3pxj6kk7TYKs98NIrTqPlMWAQ=
 github.com/json-iterator/go v1.1.11/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
