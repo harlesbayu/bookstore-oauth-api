@@ -4,16 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/harlesbayu/bookstore-utils-go/rest_errors"
 	"net/http"
 
 	"github.com/harlesbayu/bookstore_oauth-api/src/domain/users"
-	"github.com/harlesbayu/bookstore_oauth-api/src/utils/errors"
 )
 
 var baseUrl = "http://localhost:3000"
 
 type RestUsersRepository interface {
-	LoginUser(string, string) (*users.User, *errors.RestErr)
+	LoginUser(string, string) (*users.User, *rest_errors.RestErr)
 }
 
 type userRepository struct{}
@@ -22,26 +22,26 @@ func NewRestUsersRepository() RestUsersRepository {
 	return &userRepository{}
 }
 
-func (r *userRepository) LoginUser(email string, password string) (*users.User, *errors.RestErr) {
+func (r *userRepository) LoginUser(email string, password string) (*users.User, *rest_errors.RestErr) {
 	requestBody, err := json.Marshal(map[string]string{
 		"email":    email,
 		"password": password,
 	})
 
 	if err != nil {
-		return nil, errors.NewInternalServerError(err.Error())
+		return nil, rest_errors.NewInternalServerError("error marshall body", err)
 	}
 
 	resp, err := http.Post(fmt.Sprintf("%s/users/login", baseUrl), "application/json", bytes.NewBuffer(requestBody))
 
 	if err != nil {
-		return nil, errors.NewInternalServerError("error request when trying to login user")
+		return nil, rest_errors.NewInternalServerError("error request when trying to login user", err)
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.NewNotFoundError("user not found")
+		return nil, rest_errors.NewNotFoundError("user not found")
 	}
 
 	var user users.User

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/harlesbayu/bookstore_oauth-api/src/utils/errors"
+	"github.com/harlesbayu/bookstore-utils-go/rest_errors"
 )
 
 const (
@@ -30,36 +30,36 @@ type AccessTokenRequest struct {
 	ClientSecret string `json:"clientSecret"`
 }
 
-func (data *AccessTokenRequest) Validate() *errors.RestErr {
+func (data *AccessTokenRequest) Validate() *rest_errors.RestErr {
 	switch data.GrantType {
 	case grantTypePassword:
 		break
 	case grantTypeClientCredential:
 		break
 	default:
-		return errors.NewBadRequestError("invalid grant_type parameter")
+		return rest_errors.NewBadRequestError("invalid grant_type parameter")
 	}
 
 	return nil
 }
 
-func (data *AccessToken) Validate() *errors.RestErr {
+func (data *AccessToken) Validate() *rest_errors.RestErr {
 	data.AccessToken = strings.TrimSpace(data.AccessToken)
 
 	if data.AccessToken == "" {
-		return errors.NewBadRequestError("invalid access token")
+		return rest_errors.NewBadRequestError("invalid access token")
 	}
 
 	if data.UserId <= 0 {
-		return errors.NewBadRequestError("invalid user id")
+		return rest_errors.NewBadRequestError("invalid user id")
 	}
 
 	if data.ClientId <= 0 {
-		return errors.NewBadRequestError("invalid client id")
+		return rest_errors.NewBadRequestError("invalid client id")
 	}
 
 	if data.Expires <= 0 {
-		return errors.NewBadRequestError("invalid expiration time")
+		return rest_errors.NewBadRequestError("invalid expiration time")
 	}
 
 	return nil
